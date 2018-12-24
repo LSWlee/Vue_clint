@@ -39,7 +39,7 @@
               </section>
               <section class="login_message">
                 <input type="text" maxlength="11" placeholder="验证码">
-                <img class="get_verification" src="./images/captcha.svg" alt="captcha">
+                <img ref="captcha" class="get_verification" src="http://localhost:5000/captcha" alt="captcha" @click="sendCaptcha">
               </section>
             </section>
           </div>
@@ -78,6 +78,9 @@
           }
         },1000)
 
+      },
+      sendCaptcha(){
+        this.$refs.captcha.src = 'http://localhost:5000/captcha?time=' + Date.now()
       }
     }
   }
