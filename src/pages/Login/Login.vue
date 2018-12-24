@@ -18,7 +18,7 @@
               </button>
             </section>
             <section class="login_verification">
-              <input type="tel" maxlength="8" placeholder="验证码">
+              <input type="tel" maxlength="8" placeholder="验证码" v-model="phoneCode">
             </section>
             <section class="login_hint">
               温馨提示：未注册硅谷外卖帐号的手机号，登录时将自动注册，且代表已同意
@@ -28,22 +28,22 @@
           <div :class="{on:!isShow}">
             <section>
               <section class="login_message">
-                <input type="tel" maxlength="11" placeholder="手机/邮箱/用户名">
+                <input type="tel" maxlength="11" placeholder="用户名" v-model="user">
               </section>
               <section class="login_verification">
-                <input :type="pwd ? 'text' : 'password' " maxlength="8" placeholder="密码">
+                <input :type="pwd ? 'text' : 'password' " maxlength="8" placeholder="密码" v-model="userPwd">
                 <div class="switch_button" :class="pwd ? 'on' : 'off'" @click="pwd=!pwd">
                   <div class="switch_circle" :class="{right:pwd}"></div>
                   <span class="switch_text">{{pwd ? 'abc' : ''}}</span>
                 </div>
               </section>
               <section class="login_message">
-                <input type="text" maxlength="11" placeholder="验证码">
+                <input type="text" maxlength="11" placeholder="验证码" v-model="verification">
                 <img ref="captcha" class="get_verification" src="http://localhost:5000/captcha" alt="captcha" @click="sendCaptcha">
               </section>
             </section>
           </div>
-          <button class="login_submit">登录</button>
+          <button class="login_submit" @click.prevent="userLogin">登录</button>
         </form>
         <a href="javascript:;" class="about_us">关于我们</a>
       </div>
@@ -54,13 +54,19 @@
   </section>
 </template>
 <script type="text/javascript">
+  import { Toast ,MessageBox } from 'mint-ui';
+  import {reqSendcode,reqUserPwdLogin,reqverification,} from '../../api'
   export default {
     data(){
       return {
-        isShow:true,
+        isShow:true,//确定默认是短信登陆还是密码登陆
         phone:'',
         computedTime:0,
-        pwd:false
+        pwd:false,
+        user:'',
+        userPwd:'',
+        verification:'',//图片验证码
+        phoneCode:''//短信验证码
       }
     },
     computed:{
@@ -69,18 +75,67 @@
       }
     },
     methods:{
-      sendCode(){
+      //发送验证码
+     async sendCode(){
         this.computedTime = 30
         let intervalId = setInterval(()=>{
           this.computedTime--
           if(this.computedTime<=0){
+            this.computedTime = 0
             clearInterval(intervalId)
           }
         },1000)
-
+       //发送请求
+       const result = await reqSendcode(this.phone)
+       if(result.code===0){
+         //提示框
+         Toast({
+           message: '验证码发送成功',
+           position: 'center',
+           duration: 2000
+         });
+       }else{
+         this.computedTime = 0
+         MessageBox.alert('点击确认', '验证码发送失败');
+       }
       },
       sendCaptcha(){
         this.$refs.captcha.src = 'http://localhost:5000/captcha?time=' + Date.now()
+      },
+      async userLogin(){
+        const {user,userPwd,verification,isRightPhone,phoneCode,phone,isShow} = this
+        //如果是短信方式登陆
+        let result;
+        if(isShow){
+        //表单验证
+          if(!isRightPhone){
+            //手机号码不正确
+            return MessageBox.alert('手机号码不正确');
+          }else if(!/^\d{6}$/.test(phoneCode)){
+            return  MessageBox.alert('验证码有误');
+          }
+        //发送请求
+         result = await reqverification(phone,phoneCode)
+        }else{
+          //用户名密码登陆
+          if(!user.trim()){
+            return  MessageBox.alert('请输入用户名');
+          }else if(!userPwd){
+            return MessageBox.alert('请输入密码');
+          }else if (verification.length!==4){
+            return MessageBox.alert('验证码有误');
+          }
+           result = await reqUserPwdLogin({name:user,pwd:userPwd,captcha:verification})
+        }
+        //根据结果做不同响应,因为页面显示需要用到result中data的数据，所以需要将它保存到state中
+       if(result.code===0){
+          const user = result.data;
+         this.$store.dispatch('saveUser',user)
+         this.$router.replace('/profile')
+       }else{
+         return MessageBox.alert(result.msg);
+       }
+
       }
     }
   }

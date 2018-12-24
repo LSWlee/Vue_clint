@@ -13,3 +13,17 @@ export function reqCategorys() {
 export function reqShops(longitude, latitude) {
   return ajax(BASE + `/shops`,{longitude,latitude})
 }
+// 7、发送短信验证码
+export function reqSendcode(phone) {
+  return ajax(BASE + `/sendcode`,{phone})
+}
+//用户名登陆
+export const reqUserPwdLogin = ({name,pwd,captcha}) => ajax(BASE + '/login_pwd',{name,pwd,captcha},'POST')
+//手机号验证码登陆
+
+export const reqverification = (phone,code) => ajax(BASE + '/login_sms',{phone,code},'POST')
+
+//自动登陆
+export const reqUserinfo = () => ajax(BASE + '/userinfo')
+
+export const reqLogout = () => ajax(BASE + '/logout')

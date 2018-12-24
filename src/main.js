@@ -1,9 +1,13 @@
 import Vue from 'vue';
 import App from './App.vue';
+
 import router from './router';
 import store from './store'
 import NavHeader from './components/NavHeader/NavHeader.vue';
 import Star from './components/Star/Star.vue'
+import { Button } from 'mint-ui';
+
+Vue.component(Button.name, Button);
 Vue.component('NavHeader',NavHeader);
 Vue.component('Star',Star);
 new Vue({

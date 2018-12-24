@@ -3,7 +3,7 @@
     <header class="header">
       <NavHeader title="我的"/>
     </header>
-    <section class="profile-number" @click="$router.push('/login')">
+    <section class="profile-number" @click="$router.push(user._id ? '/userinfo':'/login')" v-if="!user._id">
       <a href="javascript:" class="profile-link">
         <div class="profile_image">
           <i class="iconfont icon-person"></i>
@@ -11,15 +11,35 @@
         <div class="user-info">
           <p class="user-info-top">登录/注册</p>
           <p>
-                <span class="user-icon">
-                  <i class="iconfont icon-shouji icon-mobile"></i>
-                </span>
+            <span class="user-icon">
+              <i class="iconfont icon-shouji icon-mobile"></i>
+            </span>
             <span class="icon-mobile-number">暂无绑定手机号</span>
           </p>
         </div>
         <span class="arrow">
-              <i class="iconfont icon-jiantou1"></i>
+          <i class="iconfont icon-jiantou1"></i>
+        </span>
+      </a>
+    </section>
+
+    <section class="profile-number"  v-else>
+      <a href="javascript:" class="profile-link">
+        <div class="profile_image">
+          <i class="iconfont icon-person"></i>
+        </div>
+        <div class="user-info">
+          <p class="user-info-top">{{user.name}}</p>
+          <p v-if="user.phone">
+            <span class="user-icon">
+              <i class="iconfont icon-shouji icon-mobile"></i>
             </span>
+            <span class="icon-mobile-number">{{user.phone}}</span>
+          </p>
+        </div>
+        <span class="arrow">
+          <i class="iconfont icon-jiantou1"></i>
+        </span>
       </a>
     </section>
     <section class="profile_info_data border-1px">
@@ -85,15 +105,32 @@
         <div class="my_order_div">
           <span>服务中心</span>
           <span class="my_order_icon">
-                <i class="iconfont icon-jiantou1"></i>
-              </span>
+            <i class="iconfont icon-jiantou1"></i>
+          </span>
         </div>
       </a>
     </section>
+    <mt-button type="danger" style="width: 100%" v-if="user._id" @click="logout">退出登陆</mt-button>
   </section>
 </template>
 <script type="text/javascript">
-  export default {}
+  import {mapState} from 'vuex';
+  import { MessageBox } from 'mint-ui';
+  export default {
+    computed:{
+      ...mapState(['user'])
+    },
+    methods:{
+      logout(){
+        MessageBox.confirm('确定退出登陆?').then(action => {
+          //因为信息存储在session中，所以需要发送请求
+        this.$store.dispatch('userLogout');
+        }).catch(action=>{
+        console.log(111)
+        });
+      }
+    }
+  }
 </script>
 <style lang="stylus" rel="stylesheet/stylus" scoped>
   @import "../../common/stylus/mixin.styl"

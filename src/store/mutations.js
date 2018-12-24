@@ -4,7 +4,9 @@
 import {
   RECIVE_ADDRESS,
   RECIVE_CATEGORYS,
-  RECIVE_SHOPS
+  RECIVE_SHOPS,
+  RECIVE_USER,
+  USER_LOGOUT
 } from './mution_types'
 export default {
   [RECIVE_ADDRESS] (state,{address}){
@@ -15,5 +17,11 @@ export default {
   },
   [RECIVE_SHOPS] (state,{shops}){
     state.shops = shops
+  },
+  [RECIVE_USER] (state,{user}){
+    state.user = user
+  },
+  [USER_LOGOUT] (state){
+    state.user = {}
   },
 }

@@ -5,11 +5,15 @@ import {
   reqAddress,
   reqCategorys,
   reqShops,
+  reqUserinfo,
+  reqLogout
 } from '../api'
 import {
   RECIVE_ADDRESS,
   RECIVE_CATEGORYS,
-  RECIVE_SHOPS
+  RECIVE_SHOPS,
+  RECIVE_USER,
+  USER_LOGOUT
 } from './mution_types'
 export default {
  async getAddress({commit,state}){
@@ -35,4 +39,21 @@ export default {
       commit(RECIVE_SHOPS,{shops})
     }
   },
+  saveUser({commit},user){
+      commit(RECIVE_USER,{user})
+  },
+  //异步获取当前用户信息，实现自动登陆
+  async getUser({commit}){
+  let result = await reqUserinfo()
+    if(result.code===0){
+    const user = result.data
+    commit(RECIVE_USER,{user})
+    }
+  },
+  async userLogout({commit}){
+   const result = await reqLogout()
+    if(result.code===0){
+     commit(USER_LOGOUT)
+    }
+  }
 }
