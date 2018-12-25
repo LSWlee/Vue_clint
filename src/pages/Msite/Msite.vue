@@ -49,7 +49,10 @@
       this.$store.dispatch('getCategorys');
     },
     computed:{
-      ...mapState(['address','categorys']),
+      ...mapState({
+        address: state => state.msite.address,
+        categorys:state => state.msite.categorys
+      }),
       categoryArray(){
         const {categorys} = this
         //得到大数组

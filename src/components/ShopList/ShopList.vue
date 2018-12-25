@@ -26,7 +26,6 @@
               </section>
               <section class="shop_rating_order_right">
                 <span class="delivery_style delivery_right">{{shop.delivery_mode.text}}</span>
-
               </section>
             </section>
             <section class="shop_distance">
@@ -66,7 +65,10 @@
       }
     },
     computed:{
-      ...mapState(['shops'])
+      ...mapState({
+        shops: state => state.msite.shops
+
+      })
     }
   }
 </script>
