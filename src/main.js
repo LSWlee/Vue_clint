@@ -6,7 +6,7 @@ import store from './store'
 import NavHeader from './components/NavHeader/NavHeader.vue';
 import Star from './components/Star/Star.vue'
 import { Button } from 'mint-ui';
-
+import './mock/Mock';
 Vue.component(Button.name, Button);
 Vue.component('NavHeader',NavHeader);
 Vue.component('Star',Star);

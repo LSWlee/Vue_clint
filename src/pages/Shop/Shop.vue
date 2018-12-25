@@ -18,9 +18,13 @@
 <script type="text/javascript">
   import ShopHeader from '../../components/ShopHeader/ShopHeader.vue'
   export default {
+    mounted(){
+      this.$store.dispatch('getGoods')
+      this.$store.dispatch('getInfo')
+    },
     components:{
       ShopHeader
-    }
+    },
   }
 </script>
 <style lang="stylus" rel="stylesheet/stylus" scoped>

@@ -27,3 +27,11 @@ export const reqverification = (phone,code) => ajax(BASE + '/login_sms',{phone,c
 export const reqUserinfo = () => ajax(BASE + '/userinfo')
 
 export const reqLogout = () => ajax(BASE + '/logout')
+//定义mock数据接口的请求函数
+export const reqGoods = () => ajax('/goods')
+
+export const reqRatings =() => ajax('/ratings')
+
+export const reqInfo =() => ajax('/info')
+
+
