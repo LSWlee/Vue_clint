@@ -9,11 +9,12 @@ const state = {
   ratings:[]
 }
 const actions = {
-  async getGoods({commit}){
+  async getGoods({commit},callback){
     const result = await reqGoods()
     if(result.code===0){
       const goods = result.data
       commit(RECIVE_GOODS,{goods})
+      typeof callback==='function' && callback()
     }
   },
   async getRatings({commit}){
