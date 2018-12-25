@@ -26,7 +26,7 @@
                     <span>好评率{{food.rating}}%</span></div>
                   <div class="price">
                     <span class="now">￥{{food.price}}</span>
-                    <span class="old" v-if="food.oldprice">￥{{food.oldprice}}</span>
+                    <span class="old" v-if="food.oldPrice">￥{{food.oldPrice}}</span>
                   </div>
                   <div class="cartcontrol-wrapper">
                     <CartControl :food="food"/>
@@ -57,8 +57,12 @@
     },
     methods:{
       _initScroll(){
-        new BScroll('.menu-wrapper')
-        new BScroll('.foods-wrapper')
+        new BScroll('.menu-wrapper',{
+//          click:true
+        })
+        new BScroll('.foods-wrapper',{
+//          click:true
+        })
       }
     }
   }
@@ -160,7 +164,7 @@
           .cartcontrol-wrapper
             position: absolute
             right: 0
-            bottom: 12px
+            bottom: 1px
 
 </style>
 

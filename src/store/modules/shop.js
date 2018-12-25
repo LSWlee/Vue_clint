@@ -1,8 +1,9 @@
 /**
  * Created by lsw on 2018/12/25 0025.
  */
+import Vue from 'vue'
 import {reqGoods,reqInfo,reqRatings} from '../../api'
-import {RECIVE_GOODS,RECIVE_INFO,RECIVE_RATINGS} from '../mution_types'
+import {RECIVE_GOODS,RECIVE_INFO,RECIVE_RATINGS,INCREMENT_FOOD,DECREMENT_FOOD} from '../mution_types'
 const state = {
   info:{},
   goods:[],
@@ -30,6 +31,14 @@ const actions = {
       const info = result.data
       commit(RECIVE_INFO,{info})
     }
+  },
+  updateFoodCount({commit},{isAdd,food}){
+    if(isAdd){
+      commit(INCREMENT_FOOD,{food})
+    }else{
+      commit(DECREMENT_FOOD,{food})
+    }
+
   }
 }
 const mutations = {
@@ -41,6 +50,18 @@ const mutations = {
   },
   [RECIVE_INFO](state,{info}){
     state.info = info
+  },
+  [INCREMENT_FOOD](state,{food}){
+    if(!food.count){//如果没有此属性，新添加一个
+      Vue.set(food,'count',1)
+    }else{
+      food.count++
+    }
+  },
+  [DECREMENT_FOOD](state,{food}){
+    if(food.count>0){
+      food.count--
+    }
   }
 
 }

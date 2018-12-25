@@ -1,14 +1,21 @@
 <template>
   <div class="cartcontrol">
-    <div class="iconfont icon-remove_circle_outline"></div>
-    <div class="cart-count">{{food.count}}</div>
-    <div class="iconfont icon-add_circle"></div>
+    <transition name="move">
+      <div class="iconfont icon-remove_circle_outline" v-if="food.count>0" @click="updateFoodCount(false)"></div>
+    </transition>
+    <div class="cart-count" v-if="food.count>0">{{food.count}}</div>
+    <div class="iconfont icon-add_circle" @click="updateFoodCount(true)"></div>
   </div>
 </template>
 <script type="text/javascript">
   export default {//因为动态跟新界面数据变化所以需要接收一个值，是对应的食物的值
     props:{
       food:Object
+    },
+    methods:{
+      updateFoodCount(isAdd){
+        this.$store.dispatch('updateFoodCount',{isAdd,food:this.food})
+      }
     }
   }
 </script>
@@ -29,6 +36,11 @@
       line-height 24px
       font-size 24px
       color $green
+      &.move-enter-active,&.move-leave-active
+        transition all .5s
+      &.move-enter,&.move-leave-to
+        opacity 0
+        transform translateX(20px) rotate(180deg)
     .cart-count
       display: inline-block
       vertical-align: top
