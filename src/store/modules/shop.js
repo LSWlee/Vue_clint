@@ -7,7 +7,9 @@ import {RECIVE_GOODS,RECIVE_INFO,RECIVE_RATINGS,INCREMENT_FOOD,DECREMENT_FOOD} f
 const state = {
   info:{},
   goods:[],
-  ratings:[]
+  ratings:[],
+  cartFoods:[]
+
 }
 const actions = {
   async getGoods({commit},callback){
@@ -54,6 +56,7 @@ const mutations = {
   [INCREMENT_FOOD](state,{food}){
     if(!food.count){//如果没有此属性，新添加一个
       Vue.set(food,'count',1)
+      state.cartFoods.push(food)//因为操作的都是同一个食物对象
     }else{
       food.count++
     }
@@ -61,12 +64,36 @@ const mutations = {
   [DECREMENT_FOOD](state,{food}){
     if(food.count>0){
       food.count--
+      if(food.count===0){
+        //从购物车中删除
+        state.cartFoods.splice(state.cartFoods.indexOf(food),1)
+      }
     }
   }
 
 }
 const getters = {
-
+  // cartFood(state){
+  //   const foods = []
+  //   this.state.goods.forEach(good=>{
+  //     good.foods.forEach(food=>{
+  //       if(food.count>0){
+  //         foods.push(food)
+  //       }
+  //     })
+  //   })
+  //   return foods
+  // }
+  totalCount(state){
+   return state.cartFoods.reduce((prev,food)=>{
+      return prev + food.count
+    },0)
+  },
+  totalPrice(state){
+   return state.cartFoods.reduce((prev,food)=>{
+      return prev + food.price*food.count
+    },0)
+  }
 }
 export default {
   state,
