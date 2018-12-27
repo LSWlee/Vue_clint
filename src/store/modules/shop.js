@@ -20,11 +20,12 @@ const actions = {
       typeof callback==='function' && callback()
     }
   },
-  async getRatings({commit}){
+  async getRatings({commit},cb){
     const result =await reqRatings()
     if(result.code===0){
       const ratings = result.data
       commit(RECIVE_RATINGS,{ratings})
+      typeof cb==='function' && cb()
     }
   },
   async getInfo({commit}){
@@ -93,6 +94,15 @@ const getters = {
    return state.cartFoods.reduce((prev,food)=>{
       return prev + food.price*food.count
     },0)
+  },
+  totalRatingCount(state){
+    return state.ratings.length
+  },
+  positiveRatingCount(state){
+    return state.ratings.reduce((prev,rating)=>prev + (rating.rateType===0 ? 1 : 0) ,0)
+  },
+  negativeRatingCount(state,getters){
+    return getters.totalRatingCount-getters.positiveRatingCount
   }
 }
 export default {

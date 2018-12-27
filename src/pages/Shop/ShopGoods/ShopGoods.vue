@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="goods-wrap">
       <div class="goods">
         <div class="menu-wrapper">
           <ul ref="leftUl">
@@ -42,6 +42,7 @@
         <ShopCart/>
       </div>
       <Food ref="aaa" :food="food"/>
+
     </div>
 </template>
 <script type="text/javascript">
@@ -144,12 +145,11 @@
   .goods
     display: flex
     position: absolute
-    top: 40px
+    top: 225px
     bottom: 46px
     width: 100%
     background: #fff;
     overflow: hidden
-    height 400px
     .menu-wrapper
       flex: 0 0 80px
       width: 80px
@@ -236,7 +236,6 @@
           .cartcontrol-wrapper
             position: absolute
             right: 0
-            bottom: 1px
-
+            bottom: 12px
 </style>
 
