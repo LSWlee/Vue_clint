@@ -9,6 +9,7 @@ import { Button } from 'mint-ui';
 import CartControl from './components/CartControl/CartControl.vue'
 import './mock/Mock';
 import Split from './components/Split/Split.vue'
+import './filters'
 Vue.component(Button.name, Button);
 Vue.component('NavHeader',NavHeader);
 Vue.component('Star',Star);

@@ -47,7 +47,7 @@
                 <span class="iconfont" :class="rating.rateType===0 ? 'icon-thumb_up' : 'icon-thumb_down'"></span>
                 <span class="item" v-for="(item,index) in rating.recommend" :key="index">{{item}}</span>
               </div>
-              <div class="time">{{rating.rateTime}}</div>
+              <div class="time">{{rating.rateTime | data-format('HH:mm:ss')}}</div>
             </div>
           </li>
         </ul>
