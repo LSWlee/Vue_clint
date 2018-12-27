@@ -4,7 +4,7 @@
       <div class="image-header">
         <img :src="food.image">
         <p class="foodpanel-desc">{{food.info}}</p>
-        <div class="back">
+        <div class="back" @click="isShow=false">
           <i class="iconfont icon-arrow_left"></i>
         </div>
       </div>

@@ -2,7 +2,7 @@
   <div>
     <div class="shopcart">
       <div class="content">
-        <div class="content-left">
+        <div class="content-left" @click="toggleShow">
           <div class="logo-wrapper">
             <div class="logo" :class="{highlight:totalCount>0}">
               <i class="iconfont icon-shopping_cart" :class="{highlight:totalCount>0}"></i>
@@ -13,46 +13,98 @@
           <div class="desc">另需配送费￥{{info.deliveryPrice}}元</div>
         </div>
         <div class="content-right">
-          <div class="pay not-enough">
-            还差￥10元起送
+          <div class="pay" :class="payClass">
+            {{payText}}
           </div>
         </div>
       </div>
-      <div class="shopcart-list" style="display: none;">
-        <div class="list-header">
-          <h1 class="title">购物车</h1>
-          <span class="empty">清空</span>
-        </div>
-        <div class="list-content">
-          <ul>
-            <li class="food">
-              <span class="name">红枣山药糙米粥</span>
-              <div class="price"><span>￥10</span></div>
-              <div class="cartcontrol-wrapper">
-                <div class="cartcontrol">
-                  <div class="iconfont icon-remove_circle_outline"></div>
-                  <div class="cart-count">1</div>
-                  <div class="iconfont icon-add_circle"></div>
+      <transition name="move">
+        <div class="shopcart-list" v-show="listShow">
+          <div class="list-header">
+            <h1 class="title">购物车</h1>
+            <span class="empty">清空</span>
+          </div>
+          <div class="list-content">
+            <ul>
+              <li class="food" v-for="(food,index) in cartFoods" :key="index">
+                <span class="name">{{food.name}}</span>
+                <div class="price"><span>￥{{food.price}}</span></div>
+                <div class="cartcontrol-wrapper">
+                  <CartControl :food="food"/>
                 </div>
-              </div>
-            </li>
-          </ul>
+              </li>
+            </ul>
+          </div>
         </div>
-      </div>
+      </transition>
+
     </div>
-    <div class="list-mask" style="display: none;"></div>
+    <transition name="fade">
+      <div class="list-mask" v-show="listShow" @click="toggleShow"></div>
+    </transition>
   </div>
 </template>
 <script type="text/javascript">
   //此组件显示的是所有食物中数量大于0的数据，所以需要根据foods的数据定义成计算属性/新添加一个数据
   import {mapState,mapGetters} from 'vuex'
+  import Bscroll from 'better-scroll'
   export default {
+    data(){
+      return{
+        isShow:false
+      }
+    },
     computed:{
       ...mapState({
         cartFoods:state=>state.shop.cartFoods,
         info:state=>state.shop.info
       }),
-      ...mapGetters(['totalCount','totalPrice'])
+      ...mapGetters(['totalCount','totalPrice']),
+      payText(){
+        const {totalPrice} = this
+        const {minPrice} = this.info
+        if(totalPrice===0){
+          return `￥${minPrice}起送`
+        }else if(totalPrice<minPrice){
+          return `还差￥${minPrice-totalPrice}元起送`
+        }else{
+          return '去结算'
+        }
+      },
+      payClass(){
+        const {totalPrice} = this
+        const {minPrice} = this.info
+        return totalPrice<minPrice ? 'no-enough' : 'enough'
+      },
+      listShow(){
+        //判断列表是否显示
+        console.log('listShow()')
+        const {isShow,totalCount} =this
+        if(totalCount===0){
+          this.isShow = false
+          return false
+        }
+        //创建滑动对象
+        if(this.isShow){
+          this.$nextTick(()=>{
+            if(!this.scroll){
+              this.scroll = new Bscroll('.list-content',{
+                click:true
+              })
+            }else{
+              this.scroll.refresh()
+            }
+          })
+        }
+        return isShow
+      }
+    },
+    methods:{
+      toggleShow(){
+        if(this.totalCount>0){
+          this.isShow = !this.isShow
+        }
+      }
     }
   }
 </script>
@@ -150,6 +202,11 @@
       top: 0
       z-index: -1
       width: 100%
+      transform translateY(-100%)
+      &.move-enter-active,&.move-leave-active
+        transition transform .5s
+      &.move-enter,&.move-leave-to
+        transform translateY(0px)
       .list-header
         height: 40px
         line-height: 40px
