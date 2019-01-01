@@ -85,6 +85,7 @@
         })
       }
     },
+
     components:{
       ShopList
     }
